@@ -41,7 +41,7 @@ def main(args: argparse.Namespace) -> int:
     console_handler = logging.StreamHandler()
     console_handler.setLevel(logging.INFO)
     index = datetime.now().strftime("%Y%m%d%H%M")
-    file_handler = logging.FileHandler(f"footage_{index}")
+    file_handler = logging.FileHandler(f"footage_{index}.txt")
     file_handler.setFormatter(
         logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
     )

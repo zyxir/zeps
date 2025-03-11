@@ -55,7 +55,7 @@ def compress_all(src: Path, dst: Path, total: int = 0) -> int:
         if not c.exists():
             recordings.append(r)
             compressed.append(c)
-    logging.info(f"{recordings} uncompressed recordings found")
+    logging.info(f"{len(recordings)} uncompressed recordings found")
 
     # 進行最多 total 次壓縮。
     total = len(recordings) if total == 0 else total
@@ -72,4 +72,5 @@ def compress_all(src: Path, dst: Path, total: int = 0) -> int:
             print("Compressing interrupted by Ctrl-C")
             c.unlink(missing_ok=True)
             return 130
+    logging.info(f"Compressing complete.")
     return 0

@@ -2,6 +2,7 @@
 
 import re
 from pathlib import Path
+from typing import List
 
 # 錄像名正則表达式
 RE_RECORDING = re.compile("^[0-9]+_day[0-9]+_.*\\.(mp4|mov|mkv)$")
@@ -17,9 +18,9 @@ def is_recording(file: Path) -> bool:
     return file.is_file() and RE_RECORDING.fullmatch(file.name) is not None
 
 
-def get_recordings(dir: Path) -> filter[Path]:
+def get_recordings(dir: Path) -> List[Path]:
     """獲取目錄內的全部原始錄像文件。"""
-    return filter(is_recording, dir.iterdir())
+    return list(filter(is_recording, dir.iterdir()))
 
 
 def get_recording_index(file: Path) -> int:
@@ -37,6 +38,6 @@ def is_timelapse(file: Path) -> bool:
     return file.is_file() and RE_TIMELAPSE.fullmatch(file.name) is not None
 
 
-def get_timelapses(dir: Path) -> filter[Path]:
+def get_timelapses(dir: Path) -> List[Path]:
     """獲取目錄數字編號。"""
-    return filter(is_timelapse, dir.iterdir())
+    return list(filter(is_timelapse, dir.iterdir()))
