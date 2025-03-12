@@ -12,25 +12,28 @@ def compress(src: Path, dst: Path) -> int:
     """壓縮單個錄像。"""
     cmd = [
         "ffmpeg",
-        "-i",
-        str(src),
+        # 只打印 warning 以上信息
         "-loglevel",
         "warning",
-        # 使用 H.265 編碼，文件體積更小。
+        # 使用 CUDA 硬件加速
+        "-hwaccel",
+        "cuda",
+        # 輸入視頻
+        "-i",
+        str(src),
+        # 使用 NEVC/h265 硬件編碼，文件體積更小
         "-codec:v",
-        "libx265",
-        # 更慢的 preset 產生更小的文件（默認爲 medium）。
+        "hevc_nvenc",
+        # 更慢的 preset 產生更小的文件（默認爲 medium）
         "-preset",
         "slow",
-        # CRF 越小，視頻質量越差，體積也越小（默認爲 28）。
-        "-crf",
-        "26",
-        # 1080p 分辨率。
+        # 1080p 分辨率
         "-s",
         "1920x1080",
-        # 帧率 30 以減小文件體積（錄製和成品皆爲 60）。
+        # 帧率 30 以減小文件體積（錄像和成品皆爲 60）
         "-filter:v",
         "fps=30",
+        # 輸出視頻
         str(dst),
     ]
     result = subprocess.run(cmd, shell=False, text=True, capture_output=True)
@@ -47,7 +50,7 @@ def compress_all(src: Path, dst: Path, total: int = 0) -> int:
 
     若被打斷，返回 130, 否則返回 0。
     """
-    # 獲取所有源和目的文件。
+    # 獲取所有源和目的文件
     recordings: List[Path] = []
     compressed: List[Path] = []
     for r in get_recordings(src):
@@ -57,7 +60,7 @@ def compress_all(src: Path, dst: Path, total: int = 0) -> int:
             compressed.append(c)
     logging.info(f"{len(recordings)} uncompressed recordings found")
 
-    # 進行最多 total 次壓縮。
+    # 進行最多 total 次壓縮
     total = len(recordings) if total == 0 else total
     count = 0
     while count < total and len(recordings) > 0:

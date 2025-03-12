@@ -9,6 +9,7 @@ from datetime import datetime
 from pathlib import Path
 
 from zeps.footage.compress import compress_all
+from zeps.footage.copy import copy_all
 
 
 def create_parser() -> argparse.ArgumentParser:
@@ -50,6 +51,9 @@ def main(args: argparse.Namespace) -> int:
 
     # 執行各項任務，同時接受 Ctrl-C 打斷。
     returncode = compress_all(src, dst, total)
+    if returncode != 0:
+        return returncode
+    returncode = copy_all(src, dst)
     if returncode != 0:
         return returncode
     return 0
